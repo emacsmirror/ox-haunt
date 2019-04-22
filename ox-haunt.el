@@ -136,13 +136,21 @@ valid executable."
     (&optional async subtreep visible-only body-only ext-plist)
   "Export current buffer to a Haunt post file."
   (interactive)
-  (let* ((extension (concat "." (or (plist-get ext-plist :html-extension)
-                                    org-html-extension
-                                    "html")))
-         (file (org-export-output-file-name extension subtreep))
-         (org-export-coding-system org-html-coding-system))
-    (org-export-to-file 'haunt file
-      async subtreep visible-only body-only ext-plist)))
+  (let* ((info (org-combine-plists
+                (org-export--get-export-attributes
+                 'hugo subtreep visible-only)
+                (org-export--get-buffer-attributes)
+                (org-export-get-environment 'haunt subtreep)))
+         (dest-path (plist-get info :hugo-base-dir)))
+    (ox-haunt--check-base-dir dest-path)
+    (let* ((extension (concat "." (or (plist-get ext-plist :html-extension)
+                                      org-html-extension
+                                      "html")))
+           (file (org-export-output-file-name extension subtreep))
+           (file (concat dest-path "/posts/" file))
+           (org-export-coding-system org-html-coding-system))
+      (org-export-to-file 'haunt file
+        async subtreep visible-only body-only ext-plist))))
 
 (provide 'ox-haunt)
 ;;; ox-haunt.el ends here
