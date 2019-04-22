@@ -31,6 +31,7 @@
 ;;; Code:
 
 (require 'ox)
+(require 'ox-html)
 
 (org-export-define-derived-backend 'haunt 'html
   :menu-entry
