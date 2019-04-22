@@ -43,7 +43,10 @@
               (if a (ox-haunt-export-to-html t s v b)
                 (org-open-file (ox-haunt-export-to-html nil s v b)))))))
   :translate-alist
-  '((template . ox-haunt-template)))
+  '((link . ox-haunt-link)
+    (template . ox-haunt-template))
+  :options-alist
+  '((:hugo-base-dir "HAUNT_BASE_DIR" nil nil)))
 
 (defgroup org-export-haunt nil
   "Options for exporting Org mode files to Haunt HTML."
@@ -64,6 +67,23 @@ valid executable."
 (defcustom ox-haunt-recognized-metadata '(:title :date)
   "A list of keywords to include in the Haunt metadata section."
   :type '(list symbol))
+
+(defun ox-haunt--check-base-dir (dest-path)
+  (unless dest-path
+    (user-error "It is mandatory to set the HAUNT_BASE_DIR property"))
+  (unless (file-directory-p dest-path)
+    (user-error "The HAUNT_BASE_DIR property must name a directory")))
+
+(defun ox-haunt-link (link desc info)
+  "Transcode a LINK object from Org to HTML."
+  (let* ((orig-path (org-element-property :path link))
+         (filename (file-name-nondirectory orig-path))
+         (dest-path (plist-get info :hugo-base-dir)))
+    (when (string= "file" (org-element-property :type link))
+      (ox-haunt--check-base-dir dest-path)
+      (copy-file orig-path (concat dest-path "/images/" filename) t)
+      (org-element-put-property link :path (concat "./images/" filename)))
+    (org-html-link link desc info)))
 
 (defun ox-haunt--keyword-as-string (info keyword)
   "Obtain the value of KEYWORD as a plaintext string."
