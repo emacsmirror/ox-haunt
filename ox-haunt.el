@@ -45,7 +45,8 @@
     (src-block . ox-haunt-src-block)
     (template . ox-haunt-template))
   :options-alist
-  '((:haunt-base-dir "HAUNT_BASE_DIR" nil nil)))
+  '((:tags "TAGS" nil nil)
+    (:haunt-base-dir "HAUNT_BASE_DIR" nil nil)))
 
 (defgroup org-export-haunt nil
   "Options for exporting Org mode files to Haunt HTML."
@@ -63,7 +64,7 @@ valid executable."
 `ox-haunt-tidy-html' is non-nil."
   :type 'string)
 
-(defcustom ox-haunt-recognized-metadata '(:title :date)
+(defcustom ox-haunt-recognized-metadata '(:title :date :tags)
   "A list of keywords to include in the Haunt metadata section."
   :type '(list symbol))
 
