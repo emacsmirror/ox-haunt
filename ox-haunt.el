@@ -45,7 +45,7 @@
     (src-block . ox-haunt-src-block)
     (template . ox-haunt-template))
   :options-alist
-  '((:hugo-base-dir "HAUNT_BASE_DIR" nil nil)))
+  '((:haunt-base-dir "HAUNT_BASE_DIR" nil nil)))
 
 (defgroup org-export-haunt nil
   "Options for exporting Org mode files to Haunt HTML."
@@ -121,7 +121,7 @@ valid executable."
   "Transcode a LINK object from Org to HTML."
   (let* ((orig-path (org-element-property :path link))
          (filename (file-name-nondirectory orig-path))
-         (dest-path (plist-get info :hugo-base-dir)))
+         (dest-path (plist-get info :haunt-base-dir)))
     (when (string= "file" (org-element-property :type link))
       (ox-haunt--check-base-dir dest-path)
       (copy-file orig-path (concat dest-path "/images/" filename) t)
@@ -183,7 +183,7 @@ valid executable."
                  'hugo subtreep visible-only)
                 (org-export--get-buffer-attributes)
                 (org-export-get-environment 'haunt subtreep)))
-         (dest-path (plist-get info :hugo-base-dir)))
+         (dest-path (plist-get info :haunt-base-dir)))
     (ox-haunt--check-base-dir dest-path)
     (let* ((extension (concat "." (or (plist-get ext-plist :html-extension)
                                       org-html-extension
