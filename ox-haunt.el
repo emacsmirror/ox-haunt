@@ -115,10 +115,9 @@ valid executable."
      (buffer-string))
    "---\n"
    ;; Output the article contents.
-   (let ((html (concat "<article>" contents "</article>")))
-     (if ox-haunt-tidy-html
-         (ox-haunt--tidy-html html)
-       html))))
+   (if ox-haunt-tidy-html
+       (ox-haunt--tidy-html contents)
+     contents)))
 
 ;;;###autoload
 (defun ox-haunt-export-as-html
