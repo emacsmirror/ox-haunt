@@ -45,12 +45,17 @@
     (template . ox-haunt-template))
   :options-alist
   '((:tags "TAGS" nil nil)
-    (:haunt-base-dir "HAUNT_BASE_DIR" nil nil)))
+    (:haunt-base-dir "HAUNT_BASE_DIR" nil ox-haunt-base-dir)))
 
 (defgroup org-export-haunt nil
   "Options for exporting Org mode files to Haunt HTML."
   :tag "Org Export Haunt"
   :group 'org-export)
+
+(defcustom ox-haunt-base-dir nil
+  "The default path to write output files to. This can be
+specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
+  :type 'string)
 
 (defcustom ox-haunt-tidy-html nil
   "Whether or not to format the HTML output with the external
