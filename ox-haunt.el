@@ -57,17 +57,6 @@
 specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
   :type 'string)
 
-(defcustom ox-haunt-tidy-html nil
-  "Whether or not to format the HTML output with the external
-HTML Tidy tool. Requires that `ox-haunt-tidy-executable' names a
-valid executable."
-  :type 'boolean)
-
-(defcustom ox-haunt-tidy-executable "tidy"
-  "The name of the HTML Tidy executable. Will not be run unless
-`ox-haunt-tidy-html' is non-nil."
-  :type 'string)
-
 (defcustom ox-haunt-recognized-metadata '(:title :date :tags)
   "A list of keywords to include in the Haunt metadata section."
   :type '(list symbol))
@@ -93,21 +82,6 @@ valid executable."
   "Obtain the value of KEYWORD as a plaintext string."
   (org-export-data-with-backend (plist-get info keyword) 'ascii info))
 
-(defun ox-haunt--tidy-html (html)
-  "Return the result of running HTML tidy on the given markup."
-  (let ((command (format "%s -q -w 0 --show-body-only yes"
-                         ox-haunt-tidy-executable)))
-    (with-temp-buffer
-      (insert html)
-      (cl-flet ((silence (&rest args1) (ignore)))
-        (advice-add 'message :around #'silence)
-        (unwind-protect
-            (shell-command-on-region 1 (buffer-end +1)
-                                     command
-                                     (current-buffer))
-          (advice-remove 'message #'silence)))
-      (buffer-string))))
-
 (defun ox-haunt-template (contents info)
   "Return complete document string after HTML conversion."
   (concat
@@ -121,9 +95,7 @@ valid executable."
      (buffer-string))
    "---\n"
    ;; Output the article contents.
-   (if ox-haunt-tidy-html
-       (ox-haunt--tidy-html contents)
-     contents)))
+   contents))
 
 ;;;###autoload
 (defun ox-haunt-export-as-html
