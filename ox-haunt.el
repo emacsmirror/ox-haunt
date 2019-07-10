@@ -103,7 +103,9 @@ specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
   "Export current buffer to a Haunt post buffer."
   (interactive)
   (org-export-to-buffer 'haunt "*Org Haunt Export*"
-    async subtreep visible-only body-only ext-plist
+    async subtreep visible-only body-only
+    ;; Necessary to propagate a buffer-local value for `ox-haunt-base-dir'.
+    (append `(:haunt-base-dir ,dest-path) ext-plist)
     (lambda () (set-auto-mode t))))
 
 ;;;###autoload
@@ -113,7 +115,7 @@ specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
   (interactive)
   (let* ((info (org-combine-plists
                 (org-export--get-export-attributes
-                 'hugo subtreep visible-only)
+                 'haunt subtreep visible-only)
                 (org-export--get-buffer-attributes)
                 (org-export-get-environment 'haunt subtreep)))
          (dest-path (plist-get info :haunt-base-dir)))
@@ -125,7 +127,9 @@ specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
            (file (concat dest-path "/posts/" file))
            (org-export-coding-system org-html-coding-system))
       (org-export-to-file 'haunt file
-        async subtreep visible-only body-only ext-plist))))
+        async subtreep visible-only body-only
+        ;; Necessary to propagate a buffer-local value for `ox-haunt-base-dir'.
+        (append `(:haunt-base-dir ,dest-path) ext-plist)))))
 
 (provide 'ox-haunt)
 ;;; ox-haunt.el ends here
