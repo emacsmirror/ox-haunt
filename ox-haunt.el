@@ -4,7 +4,7 @@
 
 ;; Author: Jakob L. Kreuze <zerodaysfordays@sdf.lonestar.org>
 ;; Version: 0.1
-;; Package-Requires (org)
+;; Package-Requires: ((emacs "24.3") (org "9.0"))
 ;; Keywords: convenience hypermedia wp
 ;; URL: https://git.sr.ht/~jakob/ox-haunt
 
