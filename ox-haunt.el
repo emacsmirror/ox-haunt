@@ -96,7 +96,7 @@ INFO is the current state of the export process, as a plist."
      (dolist (keyword ox-haunt-recognized-metadata)
        (when (plist-get info keyword)
          (insert (format "%s: %s\n"
-                         (subseq (symbol-name keyword) 1)
+                         (substring (symbol-name keyword) 1)
                          (ox-haunt--keyword-as-string info keyword)))))
      (buffer-string))
    "---\n"
