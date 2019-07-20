@@ -53,8 +53,8 @@
   :group 'org-export)
 
 (defcustom ox-haunt-base-dir nil
-  "The default path to write output files to. This can be
-specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
+  "The default path to write output files to.
+This can be specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
   :type 'string)
 
 (defcustom ox-haunt-recognized-metadata '(:title :date :tags)
@@ -62,13 +62,16 @@ specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
   :type '(list symbol))
 
 (defun ox-haunt--check-base-dir (dest-path)
+  "Raise an error if DEST-PATH does not name a valid directory."
   (unless dest-path
     (user-error "It is mandatory to set the HAUNT_BASE_DIR property"))
   (unless (file-directory-p dest-path)
     (user-error "The HAUNT_BASE_DIR property must name a directory")))
 
 (defun ox-haunt-link (link desc info)
-  "Transcode a LINK object from Org to HTML."
+  "Transcode a LINK object from Org to HTML.
+DESC is the description part of the link, or the empty string.
+INFO is the current state of the export process, as a plist."
   (let* ((orig-path (org-element-property :path link))
          (filename (file-name-nondirectory orig-path))
          (dest-path (plist-get info :haunt-base-dir)))
@@ -79,11 +82,14 @@ specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
     (org-html-link link desc info)))
 
 (defun ox-haunt--keyword-as-string (info keyword)
-  "Obtain the value of KEYWORD as a plaintext string."
+  "Obtain the value of KEYWORD as a plaintext string.
+INFO is the current state of the export process, as a plist."
   (org-export-data-with-backend (plist-get info keyword) 'ascii info))
 
 (defun ox-haunt-template (contents info)
-  "Return complete document string after HTML conversion."
+  "Return complete document string after HTML conversion.
+CONTENTS is the Org file's contents rendered as HTML.
+INFO is the current state of the export process, as a plist."
   (concat
    ;; Output the Haunt metadata section.
    (with-temp-buffer
@@ -100,7 +106,29 @@ specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
 ;;;###autoload
 (defun ox-haunt-export-as-html
     (&optional async subtreep visible-only body-only ext-plist)
-  "Export current buffer to a Haunt post buffer."
+  "Export current buffer to a Haunt post buffer.
+
+A non-nil optional argument ASYNC means the process should happen
+asynchronously.  The resulting buffer should be accessible
+through the `org-export-stack' interface.
+
+When optional argument SUBTREEP is non-nil, export the sub-tree
+at point, extracting information from the headline properties
+first.
+
+When optional argument VISIBLE-ONLY is non-nil, don't export
+contents of hidden elements.
+
+When optional argument BODY-ONLY is non-nil, only write code
+between \"<body>\" and \"</body>\" tags.
+
+EXT-PLIST, when provided, is a property list with external
+parameters overriding Org default settings, but still inferior to
+file-local settings.
+
+Export is done in a buffer named \"*Org Haunt Export*\", which
+will be displayed when `org-export-show-temporary-export-buffer'
+is non-nil."
   (interactive)
   (org-export-to-buffer 'haunt "*Org Haunt Export*"
     async subtreep visible-only body-only
@@ -111,7 +139,32 @@ specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
 ;;;###autoload
 (defun ox-haunt-export-to-html
     (&optional async subtreep visible-only body-only ext-plist)
-  "Export current buffer to a Haunt post file."
+  "Export current buffer to a Haunt post file.
+
+If narrowing is active in the current buffer, only export its
+narrowed part.
+
+If a region is active, export that region.
+
+A non-nil optional argument ASYNC means the process should happen
+asynchronously.  The resulting file should be accessible through
+the `org-export-stack' interface.
+
+When optional argument SUBTREEP is non-nil, export the sub-tree
+at point, extracting information from the headline properties
+first.
+
+When optional argument VISIBLE-ONLY is non-nil, don't export
+contents of hidden elements.
+
+When optional argument BODY-ONLY is non-nil, only write code
+between \"<body>\" and \"</body>\" tags.
+
+EXT-PLIST, when provided, is a property list with external
+parameters overriding Org default settings, but still inferior to
+file-local settings.
+
+Return output file's name."
   (interactive)
   (let* ((info (org-combine-plists
                 (org-export--get-export-attributes
