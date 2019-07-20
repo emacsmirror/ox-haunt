@@ -130,11 +130,17 @@ Export is done in a buffer named \"*Org Haunt Export*\", which
 will be displayed when `org-export-show-temporary-export-buffer'
 is non-nil."
   (interactive)
-  (org-export-to-buffer 'haunt "*Org Haunt Export*"
-    async subtreep visible-only body-only
-    ;; Necessary to propagate a buffer-local value for `ox-haunt-base-dir'.
-    (append `(:haunt-base-dir ,dest-path) ext-plist)
-    (lambda () (set-auto-mode t))))
+  (let* ((info (org-combine-plists
+                (org-export--get-export-attributes
+                 'haunt subtreep visible-only)
+                (org-export--get-buffer-attributes)
+                (org-export-get-environment 'haunt subtreep)))
+         (dest-path (plist-get info :haunt-base-dir)))
+    (org-export-to-buffer 'haunt "*Org Haunt Export*"
+      async subtreep visible-only body-only
+      ;; Necessary to propagate a buffer-local value for `ox-haunt-base-dir'.
+      (append `(:haunt-base-dir ,dest-path) ext-plist)
+      (lambda () (set-auto-mode t)))))
 
 ;;;###autoload
 (defun ox-haunt-export-to-html
