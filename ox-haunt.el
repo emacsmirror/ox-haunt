@@ -46,6 +46,7 @@
     (template . ox-haunt-template))
   :options-alist
   '((:tags "TAGS" nil nil)
+    (:haunt-metadata "HAUNT_METADATA" nil nil)
     (:haunt-base-dir "HAUNT_BASE_DIR" nil ox-haunt-base-dir)
     (:haunt-images-dir "HAUNT_IMAGES_DIR" nil ox-haunt-images-dir)))
 
@@ -148,6 +149,8 @@ INFO is the current state of the export process, as a plist."
          (insert (format "%s: %s\n"
                          (substring (symbol-name keyword) 1)
                          (ox-haunt--keyword-as-string info keyword)))))
+     (dolist (p (read (ox-haunt--keyword-as-string info :haunt-metadata)))
+       (insert (format "%s: %s\n" (car p) (cdr p))))
      (buffer-string))
    "---\n"
    ;; Output the article contents.
