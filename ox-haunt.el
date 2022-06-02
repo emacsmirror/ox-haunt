@@ -60,6 +60,7 @@
 This can be specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
   :type 'string)
 
+;; Notably, this excludes :haunt-metadata, which we handle separately.
 (defcustom ox-haunt-recognized-metadata '(:title :date :tags)
   "A list of keywords to include in the Haunt metadata section."
   :type '(list symbol))
@@ -149,8 +150,11 @@ INFO is the current state of the export process, as a plist."
          (insert (format "%s: %s\n"
                          (substring (symbol-name keyword) 1)
                          (ox-haunt--keyword-as-string info keyword)))))
-     (dolist (p (read (ox-haunt--keyword-as-string info :haunt-metadata)))
-       (insert (format "%s: %s\n" (car p) (cdr p))))
+     ;; Handle :haunt-metadata, which we deliberately exclude from
+     ;; `ox-haunt-recognized-metadata'.
+     (when (plist-get info :haunt-metadata)
+       (dolist (p (read (ox-haunt--keyword-as-string info :haunt-metadata)))
+         (insert (format "%s: %s\n" (car p) (cdr p)))))
      (buffer-string))
    "---\n"
    ;; Output the article contents.
