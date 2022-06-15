@@ -4,7 +4,7 @@
 
 ;; Author: Jakob L. Kreuze <zerodaysfordays@sdf.lonestar.org>
 ;; Version: 0.1
-;; Package-Requires: ((emacs "24.3") (org "9.0"))
+;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: convenience hypermedia wp
 ;; URL: https://git.sr.ht/~jakob/ox-haunt
 
@@ -122,8 +122,8 @@ formatted as 'tag, ..., tag'."
 formatted as expected by haunt."
   (when date
     (let ((date-list (split-string (string-trim date "\\[" "\\]"))))
-      (concat (first date-list) " "
-	      (third date-list)))))
+      (concat (elt date-list 0) " "
+	      (elt date-list 2)))))
 
 (defun ox-haunt--get-valid-subtree-metadata ()
   "With point on a subtree return the metadata of it or it's
