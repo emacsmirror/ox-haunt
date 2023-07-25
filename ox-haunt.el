@@ -48,6 +48,7 @@
   '((:tags "TAGS" nil nil)
     (:haunt-metadata "HAUNT_METADATA" nil nil)
     (:haunt-base-dir "HAUNT_BASE_DIR" nil ox-haunt-base-dir)
+    (:haunt-posts-dir "HAUNT_POSTS_DIR" nil ox-haunt-posts-dir)
     (:haunt-images-dir "HAUNT_IMAGES_DIR" nil ox-haunt-images-dir)))
 
 (defgroup org-export-haunt nil
@@ -64,6 +65,11 @@ This can be specified on a per-file basis with the 'HAUNT_BASE_DIR' keyword."
 (defcustom ox-haunt-recognized-metadata '(:title :date :tags)
   "A list of keywords to include in the Haunt metadata section."
   :type '(list symbol))
+
+(defcustom ox-haunt-posts-dir "/posts/"
+  "The default path to copy rendered posts to.
+This can be specified on a per-file basis with the 'HAUNT_POSTS_DIR' keyword."
+  :type 'string)
 
 (defcustom ox-haunt-images-dir "/images/"
   "The default path to copy images to.
@@ -244,6 +250,7 @@ Return output file's name."
                 (org-export--get-buffer-attributes)
                 (org-export-get-environment 'haunt subtreep)))
          (dest-path (plist-get info :haunt-base-dir))
+         (posts-path (plist-get info :haunt-posts-dir))
 	     (images-path (plist-get info :haunt-images-dir))
 	     (subtree-metadata (when subtreep
 			                 (ox-haunt--get-valid-subtree-metadata))))
@@ -259,12 +266,13 @@ Return output file's name."
 					                      org-html-extension
 					                      "html")))
                (file (org-export-output-file-name extension subtreep))
-               (file (concat dest-path "/posts/" file))
+               (file (concat dest-path posts-path file))
                (org-export-coding-system org-html-coding-system))
 	      (org-export-to-file 'haunt file
             async subtreep visible-only body-only
             ;; Necessary to propagate a buffer-local value for `ox-haunt-base-dir'.
             (append `(:haunt-base-dir ,dest-path)
+                    `(:haunt-posts-dir ,posts-path)
 		            `(:haunt-images-dir ,images-path)
 		            subtree-metadata ext-plist)))))))
 
