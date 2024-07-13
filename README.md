@@ -4,6 +4,8 @@ This library implements an HTML back-end for the Org generic exporter, producing
 output appropriate for [Haunt's](https://dthompson.us/projects/haunt.html)
 `html-reader`.
 
+An alternative, if you expect Emacs to be available at build time for your website, is [org-mode-reader](https://git.sr.ht/~jakob/blog/tree/master/item/jakob/reader/org-mode.scm).
+
 To use this exporter, add the following to your Emacs configuration:
 
 ```elisp
@@ -19,7 +21,6 @@ directory.
 
 ## Users
 
-- [Jakob's Personal Webpage](http://jakob.space/)
 - [bendersteed.tech](https://bendersteed.tech/posts/migrating-from-hugo-to-haunt.html) (thanks for the kind comments!)
 
 Would you like your blog listed here? Send a patch!
